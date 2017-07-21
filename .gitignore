@@ -3,3 +3,4 @@ pkg/
 .idea/
 src/*/vendor/
 log*
+src/config*
