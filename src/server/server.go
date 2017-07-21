@@ -5,11 +5,17 @@ import (
     "net/http"
     "encoding/json"
     "validator"
+//    "os"
+    "io/ioutil"
+//    "write"
 )
 
 type Result struct {
+    Id int
     Url string
     Target string
+//    Trace []string
+//    CreatedAt time.Time
     Message string
 }
 
@@ -23,14 +29,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
        fmt.Printf("url not found")
        message = "please enter a valid url"
     } else {
-       message = "url received"
+       message = "url ok"
     }
 
     var target = validator.Validator(url)
     
     myresult := Result{
+                 Id: 1,
                  Url: url,
                  Target: target,
+//                 Trace: trace,
+//                 CreatedAt: time,
                  Message: message,
     }
 
@@ -42,7 +51,18 @@ func handler(w http.ResponseWriter, r *http.Request) {
     }
 
     w.Header().Set("Content-Type", "application/json")
-    w.Write(jData)    
+    w.Write(jData)
+
+    logresult(string(jData))
+}
+
+func logresult(text string) {
+    dat, _ := ioutil.ReadFile("log.txt")
+
+    stuff := []byte(string(dat) + "\n" + text )
+
+    ioutil.WriteFile("log.txt", stuff, 0644)
+
 }
 
 func main() {
