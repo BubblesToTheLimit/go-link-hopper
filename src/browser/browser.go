@@ -5,17 +5,26 @@ import (
     "log"
     "time"
 
+    "github.com/knq/chromedp/runner"
     cdp "github.com/knq/chromedp"
 )
+
+type Result struct {
+    Target string
+    Trace []string
+    Error error
+}
 
 type Client struct {
     Context context.Context
     Client *cdp.CDP
     Cancel context.CancelFunc
     Timeout time.Duration
+    Url string
+    Res Result
 }
 
-func NewBrowser(timeout int) *Client {
+func NewBrowser(agent string) *Client {
     var err error
 
     // Create Context
@@ -23,7 +32,7 @@ func NewBrowser(timeout int) *Client {
     ctxt, cancel := context.WithCancel(context.Background())
 
     // Create chrome instance
-    chrome, err := cdp.New(ctxt, cdp.WithLog(log.Printf))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
+    chrome, err := cdp.New(ctxt, cdp.WithLog(log.Printf), cdp.WithRunnerOptions(runner.UserAgent(agent)))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
     if err != nil {
         log.Fatal(err)
     }
@@ -31,38 +40,32 @@ func NewBrowser(timeout int) *Client {
     client.Context = ctxt
     client.Client = chrome
     client.Cancel = cancel
-    client.Timeout = time.Duration(timeout) * time.Second
 
     return client
 }
 
-func (client *Client) Navigate(site string) bool {
+func (client *Client) Navigate(site string) Result {
     var err = client.Client.Run(client.Context, cdp.Navigate(site))
 
     if err != nil {
-        log.Fatal(err)
-        return false
+        client.Res.Error = err
+        return client.Res
     }
 
     err = client.Client.Run(client.Context, cdp.Sleep(client.Timeout))
     if err != nil {
-        log.Fatal(err)
-        return false
+        client.Res.Error = err
+        return client.Res
     }
 
-    return true
-}
-
-func (client *Client) GetLocation() string {
-    var site string
-
-    var err = client.Client.Run(client.Context, cdp.Location(&site))
+    // Get location
+    err = client.Client.Run(client.Context, cdp.Location(&client.Res.Target))
     if err != nil {
-        log.Fatal(err)
-        return ""
+        client.Res.Error = err
+        return client.Res
     }
 
-    return site
+    return client.Res
 }
 
 func (client *Client) ShutDown() bool {
