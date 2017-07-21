@@ -4,10 +4,12 @@ import (
     "fmt"
     "net/http"
     "encoding/json"
+    "validator"
 )
 
 type Result struct {
     Url string
+    Target string
     Message string
 }
 
@@ -24,8 +26,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
        message = "url received"
     }
 
+    var target = validator.Validator(url)
+    
     myresult := Result{
                  Url: url,
+                 Target: target,
                  Message: message,
     }
 
@@ -38,7 +43,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     w.Write(jData)    
-    //fmt.Fprintf(w, string(jData))
 }
 
 func main() {
