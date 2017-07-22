@@ -1,10 +1,18 @@
 #!/bin/bash
+if [[ ! $GOPATH ]]; then
+    export GOPATH=$(pwd)
+    export PATH=$PATH:$GOPATH/bin
+fi
+
 if ! [ -d "src/github.com/golang/dep" ]; then
+echo "Loading dep"
 go get -u github.com/golang/dep/cmd/dep
 fi
 
+echo "Loading browser"
 cd $GOPATH/src/browser
 dep ensure
 
+echo "Loading storage"
 cd $GOPATH/src/storage
 dep ensure
