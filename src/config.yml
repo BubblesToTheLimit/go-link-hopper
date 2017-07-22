@@ -1,6 +1,0 @@
-proxy:
-    credentials:
-        user: user
-        password: password
-    hosts:
-        "US": 1.1.1.1

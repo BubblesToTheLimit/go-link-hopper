@@ -1,0 +1,10 @@
+database:
+    name: hopper
+    host: 192.168.2.108
+    user: root
+    password: root
+
+proxy:
+    credentials:
+        user: user
+        password: password

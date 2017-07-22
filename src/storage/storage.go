@@ -7,6 +7,7 @@ import (
     "github.com/go-xorm/core"
     "github.com/go-xorm/xorm"
     _ "github.com/go-sql-driver/mysql"
+    configReader "config"
 )
 
 type Result struct {
@@ -26,7 +27,9 @@ type Proxy struct {
 }
 
 func NewEngine() (*xorm.Engine, error) {
-    engine, err := xorm.NewEngine("mysql", "root:root@tcp(192.168.2.108:3306)/hopper?charset=utf8")
+    var config = configReader.ForDatabase()
+
+    engine, err := xorm.NewEngine("mysql", fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8", config.User, config.Password, config.Host, config.Name))
     if err != nil {
         return engine, err
     }
@@ -67,6 +70,19 @@ func Save(object interface{}) int64 {
     }
 
     return cols
+}
+
+func GetProxyByCountry(country string) (*Proxy, error) {
+    engine, err := NewEngine()
+    if err != nil {
+        log.Fatal(err)
+        return nil, err
+    }
+
+    var proxy= new(Proxy)
+    engine.Where("country = ?", country).Get(proxy)
+
+    return proxy, nil
 }
 
 func Read(id int, min string, max string) []Result {
