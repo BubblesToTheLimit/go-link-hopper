@@ -26,4 +26,10 @@ if ! [ "$(ls -A $GOPATH/src/storage/vendor)" ]; then
     dep ensure
 fi
 
+if ! [ "$(ls -A $GOPATH/src/config/vendor)" ]; then
+    echo "Loading config"
+    cd $GOPATH/src/config
+    dep ensure
+fi
+
 echo "Done"

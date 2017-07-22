@@ -4,6 +4,7 @@ import (
     "context"
     "log"
     "time"
+    "fmt"
 
     "github.com/knq/chromedp/runner"
     cdp "github.com/knq/chromedp"
@@ -24,15 +25,31 @@ type Client struct {
     Res Result
 }
 
-func NewBrowser(agent string) *Client {
+func NewBrowser(agent string, country string) *Client {
     var err error
+    var proxy Proxy
+    var chrome *cdp.CDP
+
+    if country != "" {
+        proxy = ByCountry(country)
+    }
 
     // Create Context
     client := new(Client)
     ctxt, cancel := context.WithCancel(context.Background())
 
     // Create chrome instance
-    chrome, err := cdp.New(ctxt, cdp.WithLog(log.Printf), cdp.WithRunnerOptions(runner.UserAgent(agent)))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
+    var proxyOption = runner.Proxy(fmt.Sprintf("%s://%s:%s@%s:%s", proxy.Protocol, proxy.Credentials.User, proxy.Credentials.Password, proxy.Host, proxy.Port))
+    var agentOption = runner.UserAgent(agent)
+
+    fmt.Print(proxy)
+
+    if country == "" {
+        chrome, err = cdp.New(ctxt, cdp.WithRunnerOptions(agentOption))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
+    } else {
+        chrome, err = cdp.New(ctxt, cdp.WithRunnerOptions(agentOption, proxyOption))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
+    }
+
     if err != nil {
         log.Fatal(err)
     }

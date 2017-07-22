@@ -8,6 +8,7 @@ import (
     "strconv"
     "fmt"
     "storage"
+    "log"
 )
 
 func handleValidation(w http.ResponseWriter, r *http.Request) {
@@ -109,5 +110,8 @@ func Init() {
     http.HandleFunc("/proxies", handleProxies)
 
     // Start web server
-    http.ListenAndServe(":8080", nil)
+    var err = http.ListenAndServe(":8080", nil)
+    if err != nil {
+        log.Fatal(err)
+    }
 }

@@ -1,33 +1,33 @@
 package browser
 
-type Credentials struct {
-    User string
-    Password string
-}
-
-type Proxies struct {
-    Credentials Credentials
-    Hosts struct {
-
-    }
-}
+import (
+    "storage"
+    "config"
+)
 
 type Proxy struct {
     Protocol string
     Host string
     Port int
-    Credentials Credentials
+    Credentials config.Credentials
 }
 
-func NewProxy() *Proxy {
-    var proxy = new(Proxy)
+func ByCountry(country string) Proxy {
+    data, err := storage.GetProxyByCountry(country)
+    if err != nil {
+        panic(err)
+    }
 
-    proxy.Protocol = "socks5"
-    proxy.Port = 65336
+    if data == nil {
+        panic("Proxy for country " + country + " not found")
+    }
 
-    return proxy
-}
+    var proxy = config.ForProxy()
 
-func (proxy *Proxy) loadByCountry(country string) {
-
+    return Proxy{
+        Protocol: "socks5",
+        Host: data.IP,
+        Port: 61336,
+        Credentials: proxy.Credentials,
+    }
 }
