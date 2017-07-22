@@ -69,7 +69,7 @@ func Save(object interface{}) int64 {
     return cols
 }
 
-func Read() []Result {
+func Read(id int, min string, max string) []Result {
     engine, err := NewEngine()
     if err != nil {
         log.Fatal(err)
@@ -77,7 +77,13 @@ func Read() []Result {
     }
 
     var results []Result
-    err = engine.Table("Result").Select("*").
-         Find(&results)
+    if id > -1 {
+        err = engine.Table("Result").Where("id = ? AND CreatedAt <= ? AND CreatedAt >= ?", id, max, min).Select("*").
+            Find(&results)
+    } else {
+        err = engine.Table("Result").Where("CreatedAt <= ? AND CreatedAt >= ?", max, min).Select("*").
+            Find(&results)
+    }
+
     return results
 }

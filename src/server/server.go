@@ -8,6 +8,7 @@ import (
     "strconv"
     "fmt"
     "storage"
+    "time"
 )
 
 func handleValidation(w http.ResponseWriter, r *http.Request) {
@@ -108,12 +109,38 @@ func handleStatistics(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Route", "statistics")
     w.WriteHeader(200)
 
+    // trying to read parameter
+    r.ParseForm()
 
-    var results = storage.Read()
+    var id = -1
+    var sId = r.Form.Get("id")
+    if sId != "" {
+        i, err := strconv.ParseInt(sId, 10, 32)
+        if err != nil {
+            http.Error(w, "non numerical id provided: " + sId, http.StatusBadRequest)
+            return
+        }
+
+        id = int(i)
+    }
+
+    var max = r.Form.Get("max")
+    if max == "" {
+        max = time.Now().Format("YYYY-MM-DD")
+    }
+    fmt.Print("Max: " + max)
+
+    var min = r.Form.Get("min")
+    if min == "" {
+        min = "1999-01-01"
+    }
+
+    var results= storage.Read(id, min, max)
     if results == nil {
         fmt.Print("results is nil")
         return
     }
+
     jsonOutput(results, w)
 }
 
