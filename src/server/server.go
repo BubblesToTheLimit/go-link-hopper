@@ -68,31 +68,54 @@ func handleValidation(w http.ResponseWriter, r *http.Request) {
     // Persist
     storage.Save(result)
 
-    jData, err := json.Marshal(result)
-    if err != nil {
-       http.Error(w, "Serialization error: " + err.Error(), http.StatusInternalServerError)
-       return
-    }
+    // Write result to html result as json
+    jsonOutput(result, w)
 
-    w.Header().Set("Content-Type", "application/json")
-    w.Write(jData)
+    // Write result to log file
+    logResult(result, w)
 
-    logResult(string(jData))
+    fmt.Print("Validation Handler terminated\n")
 }
 
-func logResult(text string) {
+func jsonOutput (result interface{}, w http.ResponseWriter) {
+    jData, err := json.Marshal(result)
+    if err != nil {
+    http.Error(w, "Serialization error: " + err.Error(), http.StatusInternalServerError)
+    return
+    }
+
+    // Write result to return html page
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(jData)
+}
+
+func logResult(result interface{}, w http.ResponseWriter) {
+    jData, err := json.Marshal(result)
+    if err != nil {
+        http.Error(w, "Serialization error: " + err.Error(), http.StatusInternalServerError)
+        return
+    }
+    text := string(jData)
+
     dat, _ := ioutil.ReadFile("log.txt")
 
     stuff := []byte(string(dat) + text + "\n" )
 
     ioutil.WriteFile("log.txt", stuff, 0644)
-
 }
 
 func handleStatistics(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Server", "Go Link Hopper")
     w.Header().Set("Route", "statistics")
     w.WriteHeader(200)
+
+
+    var results = storage.Read()
+    if results == nil {
+        fmt.Print("results is nil")
+        return
+    }
+    jsonOutput(results, w)
 }
 
 func handleProxies(w http.ResponseWriter, r *http.Request) {

@@ -79,8 +79,21 @@ func GetProxyByCountry(country string) (*Proxy, error) {
         return nil, err
     }
 
-    var proxy = new(Proxy)
+    var proxy= new(Proxy)
     engine.Where("country = ?", country).Get(proxy)
 
     return proxy, nil
+}
+
+func Read() []Result {
+    engine, err := NewEngine()
+    if err != nil {
+        log.Fatal(err)
+        return nil
+    }
+
+    var results []Result
+    err = engine.Table("Result").Select("*").
+         Find(&results)
+    return results
 }
