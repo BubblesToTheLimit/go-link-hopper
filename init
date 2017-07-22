@@ -1,7 +1,12 @@
 #!/bin/bash
 if [[ ! $GOPATH ]]; then
+    echo "Setting/adding environment variables"
+
     export GOPATH=$(pwd)
-    export PATH=$PATH:$GOPATH/bin
+    export PATH=$PATH:$(pwd)/bin
+
+    "export GOPATH=$(pwd)" >> ~/.profile
+    "export PATH=$PATH:$(pwd)/bin" >> ~/.profile
 fi
 
 if ! [ -d "src/github.com/golang/dep" ]; then
@@ -9,10 +14,16 @@ echo "Loading dep"
 go get -u github.com/golang/dep/cmd/dep
 fi
 
-echo "Loading browser"
-cd $GOPATH/src/browser
-dep ensure
+if ! [ "$(ls -A $GOPATH/src/browser/vendor)" ]; then
+    echo "Loading browser"
+    cd $GOPATH/src/browser
+    dep ensure
+fi
 
-echo "Loading storage"
-cd $GOPATH/src/storage
-dep ensure
+if ! [ "$(ls -A $GOPATH/src/storage/vendor)" ]; then
+    echo "Loading storage"
+    cd $GOPATH/src/storage
+    dep ensure
+fi
+
+echo "Done"
