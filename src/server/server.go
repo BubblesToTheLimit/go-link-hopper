@@ -6,6 +6,7 @@ import (
     "validator"
     "io/ioutil"
     "strconv"
+    "fmt"
 )
 
 func handleValidation(w http.ResponseWriter, r *http.Request) {
@@ -96,6 +97,8 @@ func handleProxies(w http.ResponseWriter, r *http.Request) {
 }
 
 func Init() {
+    fmt.Print("Init server\n")
+
     // Add route handlers
     http.HandleFunc("/validate", handleValidation)
     http.HandleFunc("/statistics", handleStatistics)

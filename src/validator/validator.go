@@ -3,16 +3,8 @@ package validator
 import (
     "browser"
     "time"
+    "storage"
 )
-
-type Result struct {
-    Id int
-    Url string
-    Target string
-    Trace []string `xorm:`
-    CreatedAt time.Time `xorm:"created"`
-    Error error
-}
 
 type Validate struct {
     Id int
@@ -22,7 +14,7 @@ type Validate struct {
     Timeout int
 }
 
-func Validator(dto Validate) Result {
+func Validator(dto Validate) storage.Result {
     var agent = generateUserAgent(dto.OsVersion)
     var client = browser.NewBrowser(agent)
 
@@ -30,12 +22,11 @@ func Validator(dto Validate) Result {
 
     var navRes = client.Navigate(dto.Url)
 
-    var res = Result{
+    var res = storage.Result{
         Id: dto.Id,
         Url: dto.Url,
         Target: navRes.Target,
         Trace: navRes.Trace,
-        CreatedAt: time.Now(),
         Error: navRes.Error,
     }
 
