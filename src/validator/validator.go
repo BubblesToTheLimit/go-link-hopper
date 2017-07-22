@@ -9,8 +9,8 @@ type Result struct {
     Id int
     Url string
     Target string
-    Trace []string
-    CreatedAt time.Time
+    Trace []string `xorm:`
+    CreatedAt time.Time `xorm:"created"`
     Error error
 }
 

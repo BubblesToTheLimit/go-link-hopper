@@ -5,3 +5,6 @@ fi
 
 cd $GOPATH/src/browser
 dep ensure
+
+cd $GOPATH/src/storage
+dep ensure

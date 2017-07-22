@@ -1,7 +1,6 @@
-package main
+package server
 
 import (
-    "fmt"
     "net/http"
     "encoding/json"
     "validator"
@@ -9,7 +8,7 @@ import (
     "strconv"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func handleValidation(w http.ResponseWriter, r *http.Request) {
     // trying to read parameter
     r.ParseForm()
 
@@ -84,8 +83,24 @@ func logResult(text string) {
 
 }
 
-func main() {
-    fmt.Printf("Hello, friend")
-    http.HandleFunc("/", handler)
+func handleStatistics(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Server", "Go Link Hopper")
+    w.Header().Set("Route", "statistics")
+    w.WriteHeader(200)
+}
+
+func handleProxies(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Server", "Go Link Hopper")
+    w.Header().Set("Route", "proxies")
+    w.WriteHeader(200)
+}
+
+func Init() {
+    // Add route handlers
+    http.HandleFunc("/validate", handleValidation)
+    http.HandleFunc("/statistics", handleStatistics)
+    http.HandleFunc("/proxies", handleProxies)
+
+    // Start web server
     http.ListenAndServe(":8080", nil)
 }
