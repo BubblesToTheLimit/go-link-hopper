@@ -4,7 +4,6 @@ import (
     "browser"
     "time"
     "storage"
-    "fmt"
 )
 
 type Validate struct {
@@ -16,8 +15,6 @@ type Validate struct {
 }
 
 func Validator(dto Validate) storage.Result {
-    fmt.Print(dto)
-
     var agent = generateUserAgent(dto.OsVersion)
     var client = browser.NewBrowser(agent, dto.Country)
 

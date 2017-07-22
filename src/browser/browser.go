@@ -8,6 +8,7 @@ import (
 
     "github.com/knq/chromedp/runner"
     cdp "github.com/knq/chromedp"
+    "github.com/knq/chromedp/cdp/network"
 )
 
 type Result struct {
@@ -42,10 +43,8 @@ func NewBrowser(agent string, country string) *Client {
     var proxyOption = runner.Proxy(fmt.Sprintf("%s://%s:%s@%s:%s", proxy.Protocol, proxy.Credentials.User, proxy.Credentials.Password, proxy.Host, proxy.Port))
     var agentOption = runner.UserAgent(agent)
 
-    fmt.Print(proxy)
-
     if country == "" {
-        chrome, err = cdp.New(ctxt, cdp.WithRunnerOptions(agentOption))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
+        chrome, err = cdp.New(ctxt, cdp.WithLog(log.Printf), cdp.WithRunnerOptions(agentOption))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
     } else {
         chrome, err = cdp.New(ctxt, cdp.WithRunnerOptions(agentOption, proxyOption))  // For headless use cdp.WithRunnerOptions(runner.Flag("headless", true) as third parameter
     }
@@ -53,6 +52,9 @@ func NewBrowser(agent string, country string) *Client {
     if err != nil {
         log.Fatal(err)
     }
+
+    network.Enable()
+    network.SetRequestInterceptionEnabled(true)
 
     client.Context = ctxt
     client.Client = chrome

@@ -5,6 +5,7 @@ import (
     "os"
     "storage"
     "server"
+    "validator"
 )
 
 func main() {
@@ -20,6 +21,21 @@ func main() {
         storage.Init()
     case "run":
         server.Init()
+    case "validate":
+        if len(os.Args) < 3 {
+            fmt.Print("No url given")
+            return
+        }
+
+        var dto = validator.Validate{
+            ExternalId: 1,
+            Url: os.Args[2],
+            OsVersion: "2.3",
+            Timeout: 2,
+        }
+
+        var res = validator.Validator(dto)
+        fmt.Print("Target: " + res.Target)
     default:
         fmt.Print("Invalid command given\n")
     }
