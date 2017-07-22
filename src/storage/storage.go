@@ -1,15 +1,17 @@
 package storage
 
 import (
-    _ "github.com/go-sql-driver/mysql"
     "fmt"
     "time"
-    "github.com/go-xorm/xorm"
     "log"
+    "github.com/go-xorm/core"
+    "github.com/go-xorm/xorm"
+    _ "github.com/go-sql-driver/mysql"
 )
 
 type Result struct {
-    Id int `xorm:"pk"`
+    Id int `xorm:"pk autoincr"`
+    ExternalId int
     Url string
     Target string
     Trace []string
@@ -23,16 +25,46 @@ type Proxy struct {
     CreatedAt time.Time `orm:"created"`
 }
 
+func NewEngine() (*xorm.Engine, error) {
+    engine, err := xorm.NewEngine("mysql", "root:root@tcp(192.168.2.108:3306)/hopper?charset=utf8")
+    if err != nil {
+        return engine, err
+    }
+
+    engine.SetMapper(core.SameMapper{})
+
+    return engine, nil
+}
+
 // Init storage
 func Init() {
     fmt.Print("Init storage\n")
 
-    var engine, err = xorm.NewEngine("mysql", "root:root@127.0.0.1:3306/hopper?charset=utf8")
+    var engine, err = NewEngine()
     if err != nil {
         log.Fatal(err)
         return
     }
 
-    engine.Sync2(new(Result), new(Proxy))
+    err = engine.Sync2(new(Result), new(Proxy))
+    if err != nil {
+        log.Fatal(err)
+    }
     fmt.Print("Done\n")
+}
+
+func Save(object interface{}) int64 {
+    engine, err := NewEngine()
+    if err != nil {
+        log.Fatal(err)
+        return 0
+    }
+
+    cols, err := engine.Insert(object)
+    if err != nil {
+        log.Fatal(err)
+        return 0
+    }
+
+    return cols
 }

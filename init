@@ -2,8 +2,8 @@
 if [[ ! $GOPATH ]]; then
     echo "Setting/adding environment variables"
 
-    export GOPATH=$(pwd)
-    export PATH=$PATH:$(pwd)/bin
+    export GOPATH="$(pwd)"
+    export PATH=$PATH:"$(pwd)/bin"
 
     "export GOPATH=$(pwd)" >> ~/.profile
     "export PATH=$PATH:$(pwd)/bin" >> ~/.profile

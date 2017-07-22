@@ -7,6 +7,7 @@ import (
     "io/ioutil"
     "strconv"
     "fmt"
+    "storage"
 )
 
 func handleValidation(w http.ResponseWriter, r *http.Request) {
@@ -50,11 +51,11 @@ func handleValidation(w http.ResponseWriter, r *http.Request) {
     }
 
     var dto = validator.Validate{
-        Id: id,
-        Url: url,
-        OsVersion: os,
-        Timeout: timeout,
-        Country: country,
+        ExternalId: id,
+        Url:        url,
+        OsVersion:  os,
+        Timeout:    timeout,
+        Country:    country,
     }
 
     var result = validator.Validator(dto)
@@ -62,6 +63,9 @@ func handleValidation(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Validator error: " + result.Error.Error(), http.StatusInternalServerError)
         return
     }
+
+    // Persist
+    storage.Save(result)
 
     jData, err := json.Marshal(result)
     if err != nil {

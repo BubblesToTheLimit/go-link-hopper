@@ -7,11 +7,11 @@ import (
 )
 
 type Validate struct {
-    Id int
-    Url string
-    Country string
-    OsVersion string
-    Timeout int
+    ExternalId int
+    Url        string
+    Country    string
+    OsVersion  string
+    Timeout    int
 }
 
 func Validator(dto Validate) storage.Result {
@@ -23,7 +23,7 @@ func Validator(dto Validate) storage.Result {
     var navRes = client.Navigate(dto.Url)
 
     var res = storage.Result{
-        Id: dto.Id,
+        ExternalId: dto.ExternalId,
         Url: dto.Url,
         Target: navRes.Target,
         Trace: navRes.Trace,
