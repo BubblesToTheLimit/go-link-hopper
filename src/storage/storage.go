@@ -94,7 +94,7 @@ func Read(id int, min string, max string) []Result {
 
     var results []Result
     if id > -1 {
-        err = engine.Table("Result").Where("id = ? AND CreatedAt <= ? AND CreatedAt >= ?", id, max, min).Select("*").
+        err = engine.Table("Result").Where("ExternalId = ? AND CreatedAt <= ? AND CreatedAt >= ?", id, max, min).Select("*").
             Find(&results)
     } else {
         err = engine.Table("Result").Where("CreatedAt <= ? AND CreatedAt >= ?", max, min).Select("*").
