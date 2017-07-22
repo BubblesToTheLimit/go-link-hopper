@@ -68,3 +68,16 @@ func Save(object interface{}) int64 {
 
     return cols
 }
+
+func Read() []Result {
+    engine, err := NewEngine()
+    if err != nil {
+        log.Fatal(err)
+        return nil
+    }
+
+    var results []Result
+    err = engine.Table("Result").Select("*").
+         Find(&results)
+    return results
+}
