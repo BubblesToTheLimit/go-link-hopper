@@ -1,0 +1,125 @@
+#+Title:   Projekt-Notizen während des Hackatons
+#+Author:  Felix Brilej
+#+Date:    <2017-07-21 Fr>
+#+STARTUP: SHOWALL
+
+* Ziele
+  - Microservice implementieren der:
+    - Loggen kann
+    - Anfragen entgegennehmen kann
+  - Chrome Headless über Go anweisen über einen Proxy einem Link zu folgen
+    - dann zurückgeben was der finale Link war
+
+* Aufgaben
+** DONE Eine VM als gemeinsamen Server bereitstellen
+   CLOSED: [2017-07-21 Fr 16:52]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 16:27]--[2017-07-21 Fr 16:52] =>  0:25
+   :END:
+   ip: 192.168.2.108
+
+** DONE Go auf dem Server installieren mit Demo
+   CLOSED: [2017-07-21 Fr 18:07]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 17:20]--[2017-07-21 Fr 18:07] =>  0:47
+   :END:
+   - [X] https://www.digitalocean.com/community/tutorials/how-to-install-go-1-6-on-ubuntu-14-04
+
+** CANCELED Chromium Headless testrun zum Laufen bringen
+   CLOSED: [2017-07-22 Sa 10:54]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 22:20]--[2017-07-21 Fr 22:34] =>  0:14
+   CLOCK: [2017-07-21 Fr 21:22]--[2017-07-21 Fr 22:05] =>  0:43
+   :END:
+   Links:
+   - https://www.cyberciti.biz/faq/x11-connection-rejected-because-of-wrong-authentication/
+
+   Der Demo Code von https://github.com/knq/chromedp läuft, Problem waren nur User-Berechtigungen
+
+   Elmo möchte aber doch etwas anderes, und zwar spezifisch das "--headless" Flag. Die aktuelle
+   Entwicklung dazu hat komplett er gemacht.
+
+** DONE Log stuff to file
+   CLOSED: [2017-07-22 Sa 00:27]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 23:00]--[2017-07-22 Sa 00:27] =>  1:27
+   :END:
+
+** DONE Make Validator and Server package work together
+   CLOSED: [2017-07-21 Fr 23:00]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 22:34]--[2017-07-21 Fr 23:00] =>  0:26
+   :END:
+   Links:
+   - https://siongui.github.io/2016/04/05/go-write-string-to-file/
+   - https://stackoverflow.com/questions/1821811/how-to-read-write-from-to-file-using-golang
+
+   Problem:
+   #+BEGIN_SRC sh
+   cannot use dat (type []byte) as type string in argument to write.WriteStringToFile
+   #+END_SRC
+
+** DONE GUI machen mit results
+   CLOSED: [2017-07-22 Sa 16:17]
+   :LOGBOOK:
+   CLOCK: [2017-07-22 Sa 13:38]--[2017-07-22 Sa 16:17] =>  2:39
+   :END:
+   Folgende Dinge sollen einstellbar sein:
+   - time min und max der Anfrage
+   - id der anfrage
+
+** CANCELED Go make command auf Windows 10 zum laufen bekommen
+   CLOSED: [2017-07-22 Sa 16:17]
+   :LOGBOOK:
+   CLOCK: [2017-07-22 Sa 11:19]--[2017-07-22 Sa 11:24] =>  0:05
+   :END:
+   Sonst muss ich immer erst committen bis ich meine Code-Änderung testen kann
+
+   https://www.logicsupply.com/explore/io-hub/how-to-enable-linux-bash-in-windows-10/
+
+   Alternative: das was make ausführt selber ausführen, eben ohne den Comfort von make
+
+** CANCELED Das aktuelle chromium plugin wieder zum Laufen bekommen
+   CLOSED: [2017-07-22 Sa 16:18]
+   :LOGBOOK:
+   CLOCK: [2017-07-22 Sa 12:35]--[2017-07-22 Sa 13:38] =>  1:03
+   CLOCK: [2017-07-22 Sa 11:24]--[2017-07-22 Sa 12:34] =>  1:10
+   :END:
+   Die VM schmeißt beim chrome plugin Fehler, auf unseren Stand-PCs gehts.
+
+   Alternative: Die VM nur für den mysql-server nutzen
+
+** DONE Einen Mysql-Server mit korrektem Schema zum Laufen bekommen
+   CLOSED: [2017-07-22 Sa 16:18]
+   :LOGBOOK:
+   CLOCK: [2017-07-22 Sa 10:55]--[2017-07-22 Sa 11:19] =>  0:24
+   :END:
+   Hat Elmo gemacht mit seiner init Funktion
+
+** DONE Parameterübergabe an Go-Server mit Weitergabe an Binary realisieren
+   CLOSED: [2017-07-22 Sa 16:19]
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 20:27]--[2017-07-21 Fr 21:21] =>  0:54
+   CLOCK: [2017-07-21 Fr 18:56]--[2017-07-21 Fr 20:00] =>  1:04
+   CLOCK: [2017-07-21 Fr 18:19]--[2017-07-21 Fr 18:53] =>  0:34
+   :END:
+   Links:
+   - http://nordicapis.com/writing-microservices-in-go
+
+** TODO Go Server ständig laufen lassen
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 22:12]--[2017-07-21 Fr 22:20] =>  0:08
+   :END:
+
+** PENDING Einstieg in Go bezogen auf das Projekt
+   :LOGBOOK:
+   CLOCK: [2017-07-21 Fr 16:59]--[2017-07-21 Fr 17:20] =>  0:21
+   CLOCK: [2017-07-21 Fr 16:25]--[2017-07-21 Fr 16:27] =>  0:02
+   CLOCK: [2017-07-21 Fr 16:18]--[2017-07-21 Fr 16:24] =>  0:06
+   CLOCK: [2017-07-21 Fr 15:49]--[2017-07-21 Fr 16:18] =>  0:29
+   :END:
+   Links:
+   - https://tour.golang.org
+   - https://tour.golang.org/basics/1
+   - https://golang.org/doc/code.html
+   - http://nordicapis.com/writing-microservices-in-go/
